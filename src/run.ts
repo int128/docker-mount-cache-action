@@ -6,7 +6,7 @@ import * as fs from 'fs/promises'
 type Inputs = object
 
 export const run = async (inputs: Inputs): Promise<void> => {
-  core.info(`GITHUB_ACTION_PATH=${process.env.GITHUB_ACTION_PATH}`)
+  core.info(JSON.stringify(process.env, undefined, 2))
 
   inputs
 
