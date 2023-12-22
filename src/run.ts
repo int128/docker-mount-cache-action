@@ -6,7 +6,7 @@ import * as fs from 'fs/promises'
 type Inputs = object
 
 export const run = async (inputs: Inputs): Promise<void> => {
-  core.info(JSON.stringify(process.env, undefined, 2))
+  core.info(JSON.stringify(process.argv, undefined, 2))
 
   inputs
 
