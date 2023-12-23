@@ -10,10 +10,11 @@ const runnerTempDir = process.env.RUNNER_TEMP || os.tmpdir()
 type Inputs = {
   path: string
   key: string
+  restoreKeys: string[]
 }
 
 export const run = async (inputs: Inputs): Promise<void> => {
-  const cacheHitKey = await cache.restoreCache(['cache.tar'], inputs.key)
+  const cacheHitKey = await cache.restoreCache(['cache.tar'], inputs.key, inputs.restoreKeys)
   if (cacheHitKey === undefined) {
     core.info(`Cache not found for key ${inputs.key}`)
     return
@@ -35,7 +36,6 @@ RUN --mount=type=cache,target=\${cache_target} tar x -f /cache.tar -C \${cache_t
   await exec.exec('docker', [
     'buildx',
     'build',
-    '--quiet',
     '--build-arg',
     `cache_target=${inputs.path}`,
     '--iidfile',

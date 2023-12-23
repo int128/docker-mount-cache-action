@@ -27,7 +27,6 @@ RUN --mount=type=cache,target=\${cache_target} tar c -f /cache.tar -C \${cache_t
   await exec.exec('docker', [
     'buildx',
     'build',
-    '--quiet',
     '--build-arg',
     `cache_target=${inputs.path}`,
     '--iidfile',

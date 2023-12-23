@@ -38,7 +38,8 @@ jobs:
         uses: ./
         with:
           path: /root/.cache/go
-          key: ${{ runner.os }}-go-${{ hashFiles('tests/fixtures/go.mod') }}
+          key: ${{ runner.os }}-go-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-go-
 
       - uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
