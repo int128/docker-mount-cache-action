@@ -19,6 +19,7 @@ export const run = async (inputs: Inputs): Promise<void> => {
     core.info(`Cache not found for key ${inputs.key}`)
     return
   }
+  core.info(`Restoring cache from key ${cacheHitKey}`)
 
   const contextDir = await fs.mkdtemp(path.join(runnerTempDir, 'restore-cache-'))
   await fs.rename('cache.tar', path.join(contextDir, 'cache.tar'))

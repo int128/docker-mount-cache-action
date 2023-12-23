@@ -37,7 +37,7 @@ jobs:
       - name: int128/docker-mount-cache-action
         uses: ./
         with:
-          path: /root/.cache/go
+          path: /root/.cache/go-build
           key: ${{ runner.os }}-go-${{ github.sha }}
           restore-keys: ${{ runner.os }}-go-
 
