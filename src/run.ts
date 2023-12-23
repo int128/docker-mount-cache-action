@@ -13,8 +13,10 @@ export const saveCache = async (inputs: Inputs): Promise<void> => {
   await fs.writeFile(
     `${inputs.contextDir}/Dockerfile`,
     `
-FROM busybox:stable
+FROM busybox:stable AS creator
 RUN --mount=type=cache,target=${inputs.path} tar c -v -f /cache.tar -C ${inputs.path} .
+FROM scratch
+COPY --from=creator /cache.tar /cache.tar
 `,
   )
   await exec.exec('docker', [
@@ -37,7 +39,9 @@ export const restoreCache = async (inputs: Inputs): Promise<void> => {
   await fs.writeFile(
     `${inputs.contextDir}/Dockerfile`,
     `
-FROM ${cacheTag}
+FROM ${cacheTag} AS cache
+FROM busybox:stable
+COPY --from=cache /cache.tar /cache.tar
 RUN --mount=type=cache,target=${inputs.path} tar x -v -f /cache.tar -C ${inputs.path}
 `,
   )
