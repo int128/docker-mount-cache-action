@@ -1,4 +1,3 @@
-import * as cache from '@actions/cache'
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import * as os from 'os'
@@ -9,32 +8,18 @@ const runnerTempDir = process.env.RUNNER_TEMP || os.tmpdir()
 
 type Inputs = {
   path: string
-  key: string
-  restoreKeys: string[]
+  tags: string
 }
 
 export const run = async (inputs: Inputs): Promise<void> => {
-  const cacheHitKey = await cache.restoreCache(['cache.tar'], inputs.key, inputs.restoreKeys)
-  if (cacheHitKey === undefined) {
-    core.info(`Cache not found for key ${inputs.key}`)
-    return
-  }
-  core.info(`Restoring cache from key ${cacheHitKey}`)
-
   const contextDir = await fs.mkdtemp(path.join(runnerTempDir, 'restore-cache-'))
-  await fs.rename('cache.tar', path.join(contextDir, 'cache.tar'))
   await fs.writeFile(
     `${contextDir}/Dockerfile`,
     `
-FROM busybox:stable
-COPY cache.tar /cache.tar
+FROM ${inputs.tags}
 RUN --mount=type=cache,target=${inputs.path} tar x -v -f /cache.tar -C ${inputs.path}
 `,
   )
-
-  const iidfile = path.join(contextDir, 'iidfile')
-  await exec.exec('docker', ['buildx', 'build', '--iidfile', iidfile, contextDir])
-  const imageID = (await fs.readFile(iidfile)).toString()
-  await exec.exec('docker', ['image', 'rm', imageID])
-  core.info(`Restored cache from key ${cacheHitKey}`)
+  await exec.exec('docker', ['buildx', 'build', contextDir])
+  core.info(`Restored cache from ${inputs.tags} to ${inputs.path}`)
 }
