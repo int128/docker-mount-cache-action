@@ -5,12 +5,10 @@
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint **/*.ts",
-    "package-restore": "ncc build --source-map --license licenses.txt -o dist/restore src/restore/main.ts",
-    "package-save": "ncc build --source-map --license licenses.txt -o dist/save src/save/main.ts",
+    "package": "ncc build -o dist/main src/main.ts && ncc build -o dist/post src/post.ts",
     "test": "jest"
   },
   "dependencies": {
-    "@actions/cache": "^3.2.2",
     "@actions/core": "1.10.1",
     "@actions/exec": "^1.1.1"
   },

@@ -1,5 +1,0 @@
-FROM busybox:stable
-COPY . .
-RUN --mount=type=cache,target=/root/.cache/go-build \
-    tar x -f cache.tgz -C /root/.cache/go-build && \
-    ls -aC /root/.cache/go-build
