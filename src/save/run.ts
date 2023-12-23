@@ -1,4 +1,4 @@
-import * as cache from '@actions/cache'
+// import * as cache from '@actions/cache'
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import * as os from 'os'
@@ -35,7 +35,7 @@ RUN --mount=type=cache,target=${inputs.path} tar c -v -f /cache.tar -C ${inputs.
   await exec.exec('docker', ['image', 'rm', imageID])
 
   core.info(`Saving cache as key ${inputs.key}`)
-  await cache.saveCache(['cache.tar'], inputs.key)
+  // await cache.saveCache(['cache.tar'], inputs.key)
   core.info(`Removing cache.tar`)
   await fs.rm('cache.tar')
   core.info(`Saved cache as key ${inputs.key}`)
