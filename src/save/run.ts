@@ -20,7 +20,7 @@ export const run = async (inputs: Inputs): Promise<void> => {
     `
 FROM busybox:stable
 ARG cache_target
-RUN --mount=type=cache,target=\${cache_target} tar c -f /cache.tar -C \${cache_target} .
+RUN --mount=type=cache,target=\${cache_target} tar c -v -f /cache.tar -C \${cache_target} .
 `,
   )
   const iidfile = path.join(contextDir, 'iidfile')
@@ -45,5 +45,7 @@ RUN --mount=type=cache,target=\${cache_target} tar c -f /cache.tar -C \${cache_t
 
   core.info(`Saving cache as key ${inputs.key}`)
   await cache.saveCache(['cache.tar'], inputs.key)
+  core.info(`Removing cache.tar`)
   await fs.rm('cache.tar')
+  core.info(`Saved cache as key ${inputs.key}`)
 }

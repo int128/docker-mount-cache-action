@@ -28,7 +28,7 @@ export const run = async (inputs: Inputs): Promise<void> => {
 FROM busybox:stable
 COPY cache.tar /cache.tar
 ARG cache_target
-RUN --mount=type=cache,target=\${cache_target} tar x -f /cache.tar -C \${cache_target}
+RUN --mount=type=cache,target=\${cache_target} tar x -v -f /cache.tar -C \${cache_target}
 `,
   )
 

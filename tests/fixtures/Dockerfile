@@ -7,10 +7,9 @@ RUN go mod download
 COPY main.go .
 
 RUN --mount=type=cache,target=/root/.cache/go-build \
-    ls -a /root/.cache/go-build && \
-    go version && \
-    go build -o main main.go && \
-    ls -a /root/.cache/go-build
+    ls -aC /root/.cache/go-build && \
+    go build -v -o main main.go && \
+    ls -aC /root/.cache/go-build
 
 FROM gcr.io/distroless/static:nonroot
 WORKDIR /
