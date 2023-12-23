@@ -1,10 +1,59 @@
 import * as core from '@actions/core'
+import * as exec from '@actions/exec'
+import * as fs from 'fs/promises'
 
 type Inputs = {
-  name: string
+  path: string
+  fromTags: string[]
+  toTags: string[]
+  contextDir: string
 }
 
-// eslint-disable-next-line @typescript-eslint/require-await
-export const run = async (inputs: Inputs): Promise<void> => {
-  core.info(`my name is ${inputs.name}`)
+export const saveCache = async (inputs: Inputs): Promise<void> => {
+  await fs.writeFile(
+    `${inputs.contextDir}/Dockerfile`,
+    `
+FROM busybox:stable AS creator
+RUN --mount=type=cache,target=${inputs.path} tar c -v -f /cache.tar -C ${inputs.path} .
+FROM scratch
+COPY --from=creator /cache.tar /cache.tar
+`,
+  )
+  await exec.exec('docker', [
+    'buildx',
+    'build',
+    ...inputs.toTags.flatMap((tag) => ['--tag', tag]),
+    '--push',
+    inputs.contextDir,
+  ])
+  core.info(`Pushed cache from ${inputs.path} to ${inputs.toTags.join(', ')}`)
+}
+
+export const restoreCache = async (inputs: Inputs): Promise<void> => {
+  const cacheTag = await findExistingTag(inputs.toTags)
+  if (!cacheTag) {
+    core.info(`Cache not found`)
+    return
+  }
+
+  await fs.writeFile(
+    `${inputs.contextDir}/Dockerfile`,
+    `
+FROM ${cacheTag} AS cache
+FROM busybox:stable
+COPY --from=cache /cache.tar /cache.tar
+RUN --mount=type=cache,target=${inputs.path} tar x -v -f /cache.tar -C ${inputs.path}
+`,
+  )
+  await exec.exec('docker', ['buildx', 'build', inputs.contextDir])
+  core.info(`Restored cache from ${cacheTag} to ${inputs.path}`)
+}
+
+const findExistingTag = async (tags: string[]): Promise<string | undefined> => {
+  for (const tag of tags) {
+    const code = await exec.exec('docker', ['image', 'pull', '--quiet', tag], { ignoreReturnCode: true })
+    if (code === 0) {
+      return tag
+    }
+  }
 }

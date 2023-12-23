@@ -1,11 +1,18 @@
-name: typescript-action
-description: Template of TypeScript Action
+name: docker-mount-cache-action
+description: Manage --mount=type=cache
 
 inputs:
-  name:
-    description: example input
+  path:
+    description: Target path of `--mount=type=cache`
+    required: true
+  from-tags:
+    description: Pull a cache image from tags
+    required: true
+  to-tags:
+    description: Push a cache image to tags
     required: true
 
 runs:
   using: 'node20'
-  main: 'dist/index.js'
+  main: 'dist/main/index.js'
+  post: 'dist/post/index.js'

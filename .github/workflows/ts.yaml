@@ -29,14 +29,8 @@ jobs:
           node-version: 20
           cache: yarn
       - run: yarn
-      - run: yarn test
       - run: yarn build
-      - run: yarn package
-
-      - name: e2e-test
-        uses: ./
-        with:
-          name: foo
+      - run: yarn test
 
   generate:
     runs-on: ubuntu-latest
