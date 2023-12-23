@@ -12,6 +12,12 @@ type Inputs = {
 }
 
 export const run = async (inputs: Inputs): Promise<void> => {
+  const code = await exec.exec('docker', ['pull', '--quiet', inputs.tags], { ignoreReturnCode: true })
+  if (code !== 0) {
+    core.info(`Cache not found for ${inputs.tags}`)
+    return
+  }
+
   const contextDir = await fs.mkdtemp(path.join(runnerTempDir, 'restore-cache-'))
   await fs.writeFile(
     `${contextDir}/Dockerfile`,

@@ -4,7 +4,7 @@ import { run } from './run'
 const main = async (): Promise<void> => {
   await run({
     path: core.getInput('path', { required: true }),
-    key: core.getInput('key', { required: true }),
+    tags: core.getInput('tags', { required: true }),
   })
 }
 
