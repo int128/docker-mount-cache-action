@@ -29,13 +29,13 @@ jobs:
           node-version: 20
           cache: yarn
       - run: yarn
-      - run: yarn build
-      - run: yarn package
+      - run: yarn package-restore
+      - run: yarn package-save
       - name: int128/docker-mount-cache-action
         uses: ./
         with:
           path: /root/.cache/go
-          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
+          key: ${{ runner.os }}-go-${{ hashFiles('tests/fixtures/go.mod') }}
 
       - uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:

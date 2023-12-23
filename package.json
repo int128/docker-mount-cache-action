@@ -1,12 +1,12 @@
 {
   "private": true,
-  "main": "lib/src/main.js",
   "scripts": {
     "build": "tsc",
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint **/*.ts",
-    "package": "ncc build --source-map --license licenses.txt",
+    "package-restore": "ncc build --source-map --license licenses.txt -o dist/restore src/restore/main.ts",
+    "package-save": "ncc build --source-map --license licenses.txt -o dist/save src/save/main.ts",
     "test": "jest"
   },
   "dependencies": {
