@@ -4,7 +4,7 @@ WORKDIR /workspace
 COPY go.* .
 RUN go mod download
 
-COPY main.go .
+COPY . .
 
 RUN --mount=type=cache,target=/root/.cache/go-build \
     ls -aC /root/.cache/go-build && \

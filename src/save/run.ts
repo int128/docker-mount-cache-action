@@ -19,20 +19,11 @@ export const run = async (inputs: Inputs): Promise<void> => {
     `${contextDir}/Dockerfile`,
     `
 FROM busybox:stable
-ARG cache_target
-RUN --mount=type=cache,target=\${cache_target} tar c -v -f /cache.tar -C \${cache_target} .
+RUN --mount=type=cache,target=${inputs.path} tar c -v -f /cache.tar -C ${inputs.path} .
 `,
   )
   const iidfile = path.join(contextDir, 'iidfile')
-  await exec.exec('docker', [
-    'buildx',
-    'build',
-    '--build-arg',
-    `cache_target=${inputs.path}`,
-    '--iidfile',
-    iidfile,
-    contextDir,
-  ])
+  await exec.exec('docker', ['buildx', 'build', '--iidfile', iidfile, contextDir])
   const imageID = (await fs.readFile(iidfile)).toString()
 
   const cidfile = path.join(contextDir, 'cidfile')

@@ -28,21 +28,12 @@ export const run = async (inputs: Inputs): Promise<void> => {
     `
 FROM busybox:stable
 COPY cache.tar /cache.tar
-ARG cache_target
-RUN --mount=type=cache,target=\${cache_target} tar x -v -f /cache.tar -C \${cache_target}
+RUN --mount=type=cache,target=${inputs.path} tar x -v -f /cache.tar -C ${inputs.path}
 `,
   )
 
   const iidfile = path.join(contextDir, 'iidfile')
-  await exec.exec('docker', [
-    'buildx',
-    'build',
-    '--build-arg',
-    `cache_target=${inputs.path}`,
-    '--iidfile',
-    iidfile,
-    contextDir,
-  ])
+  await exec.exec('docker', ['buildx', 'build', '--iidfile', iidfile, contextDir])
   const imageID = (await fs.readFile(iidfile)).toString()
   await exec.exec('docker', ['image', 'rm', imageID])
   core.info(`Restored cache from key ${cacheHitKey}`)
