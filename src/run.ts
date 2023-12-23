@@ -25,7 +25,7 @@ export const run = async (inputs: Inputs): Promise<void> => {
 FROM node:${process.version.replace(/^v/, '')}-alpine
 ARG INPUT_PATH
 ARG INPUT_KEY
-COPY index.js .
+COPY dist.js .
 RUN --mount=type=cache,target="${inputs.path}" INPUT_AGENT=1 node dist.js
 `,
   )
