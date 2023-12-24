@@ -6,7 +6,7 @@ on:
       - src/**
       - tests/**
       - '*.json'
-      - action.yaml
+      - '**/action.yaml'
       - .github/workflows/e2e-test.yaml
   push:
     branches:
@@ -15,7 +15,7 @@ on:
       - src/**
       - tests/**
       - '*.json'
-      - action.yaml
+      - '**/action.yaml'
       - .github/workflows/e2e-test.yaml
 
 jobs:
