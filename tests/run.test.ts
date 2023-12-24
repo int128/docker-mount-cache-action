@@ -11,8 +11,7 @@ describe('saveCache', () => {
     const contextDir = await fs.mkdtemp(path.join(os.tmpdir(), 'context-'))
     await saveCache({
       path: '/root/.cache/go-build',
-      fromTags: ['ghcr.io/cache:go-build'],
-      toTags: ['ghcr.io/cache:go-build'],
+      tags: ['ghcr.io/cache:go-build'],
       contextDir,
     })
     expect(exec.exec).toHaveBeenCalledWith('docker', [
@@ -32,8 +31,7 @@ describe('restoreCache', () => {
     const contextDir = await fs.mkdtemp(path.join(os.tmpdir(), 'context-'))
     await restoreCache({
       path: '/root/.cache/go-build',
-      fromTags: ['ghcr.io/cache:go-build'],
-      toTags: ['ghcr.io/cache:go-build'],
+      tags: ['ghcr.io/cache:go-build'],
       contextDir,
     })
     expect(exec.exec).toHaveBeenCalledWith('docker', ['image', 'pull', '--quiet', 'ghcr.io/cache:go-build'], {

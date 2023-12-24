@@ -5,7 +5,7 @@
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint **/*.ts",
-    "package": "ncc build -o dist/main src/main.ts && ncc build -o dist/post src/post.ts",
+    "package": "ncc build --source-map --license licenses.txt",
     "test": "jest"
   },
   "dependencies": {

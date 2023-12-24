@@ -4,9 +4,19 @@ import * as fs from 'fs/promises'
 
 type Inputs = {
   path: string
-  fromTags: string[]
-  toTags: string[]
+  tags: string[]
   contextDir: string
+  internalMode?: string
+}
+
+export const run = async (inputs: Inputs): Promise<void> => {
+  if (inputs.internalMode === 'save') {
+    return await saveCache(inputs)
+  }
+  if (inputs.internalMode === 'restore') {
+    return await restoreCache(inputs)
+  }
+  throw new Error(`internal error: unknown internal-mode=${inputs.internalMode}`)
 }
 
 export const saveCache = async (inputs: Inputs): Promise<void> => {
@@ -22,15 +32,15 @@ COPY --from=creator /cache.tar /cache.tar
   await exec.exec('docker', [
     'buildx',
     'build',
-    ...inputs.toTags.flatMap((tag) => ['--tag', tag]),
+    ...inputs.tags.flatMap((tag) => ['--tag', tag]),
     '--push',
     inputs.contextDir,
   ])
-  core.info(`Pushed cache from ${inputs.path} to ${inputs.toTags.join(', ')}`)
+  core.info(`Pushed cache from ${inputs.path} to ${inputs.tags.join(', ')}`)
 }
 
 export const restoreCache = async (inputs: Inputs): Promise<void> => {
-  const cacheTag = await findExistingTag(inputs.toTags)
+  const cacheTag = await findExistingTag(inputs.tags)
   if (!cacheTag) {
     core.info(`Cache not found`)
     return

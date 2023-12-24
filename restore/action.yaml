@@ -1,0 +1,17 @@
+name: docker-mount-cache-action / restore
+description: Restore the cache of --mount=type=cache from a remote registry
+
+inputs:
+  path:
+    description: Target path of `--mount=type=cache`
+    required: true
+  tags:
+    description: Pull a cache image from tags
+    required: true
+  internal-mode:
+    description: (Internal) This should be restore
+    default: restore
+
+runs:
+  using: 'node20'
+  main: '../dist/index.js'
