@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import * as fs from 'fs/promises'
 import * as os from 'os'
 import * as path from 'path'
-import { run } from './run'
+import { run } from './run.js'
 
 const main = async (): Promise<void> => {
   await run({

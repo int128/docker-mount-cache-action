@@ -2,7 +2,7 @@ import * as exec from '@actions/exec'
 import * as fs from 'fs/promises'
 import * as os from 'os'
 import * as path from 'path'
-import { restoreCache, saveCache } from '../src/run'
+import { restoreCache, saveCache } from '../src/run.js'
 
 jest.mock('@actions/exec')
 
